@@ -174,7 +174,8 @@ def display_instances(strname, image, boxes, masks, class_ids, class_names,
     str1 = strname.replace('.jpg','BW.jpg')
     # # str1=aa[0]+'BW'+'.jpg'
     str2 = num+str1
-    scipy.misc.imsave(str1, mymask)
+    import imageio
+    imageio.imwrite(str1, mymask)
 
     return jj
 
