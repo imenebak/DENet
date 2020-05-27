@@ -32,27 +32,17 @@ class listDataset(Dataset):
 
         img_path = self.lines[index]
         img, target = load_data(img_path, self.train)
-        # gt_path=img_path.replace('.jpg','.h5').replace('images','ground_truth').replace('newpartA','part_A_final')
-        # gt_path = img_path.replace('.jpg', '.h5').replace('images', 'ground_truth').replace('newpartB', 'part_B_final')
-        gt_path = img_path.replace('.jpg', '.h5').replace('UCF_CC_50', 'ORI_UCF')
-        # gt_path = img_path.replace('.jpg', '.h5').replace('images', 'ground_truth')
+        
+        gt_path = img_path.replace('.jpg', '.h5').replace('sequences', 'ground_truth')
 
         gt_file = h5py.File(gt_path, 'r')
         groundtruth = np.asarray(gt_file['density'])
         GT = np.sum(groundtruth)
-        # str1 = img_path.split('/images/')
-        str1 = img_path.split('/UCF_CC_50/')
-        #
+        str1 = img_path.split('/sequences/')
         img_name = str1[1]
         img_name = img_name.encode('unicode-escape').decode('string_escape')
-        # if self.train:
-        #     # file = open('./detection_result/trainA.txt', 'r')
-        #     file = open('./detection_result/trainB.txt', 'r')
-        # else:
-        #     # file = open('./detection_result/testA.txt', 'r')
-        #     file = open('./detection_result/testB.txt', 'r')
-        file = open('./detection_result/UCF.txt', 'r')
-        # file = open('./detection_result/UCSD.txt', 'r')
+
+        file = open('./detection_result/train.txt', 'r')
         js = file.read()
         dict = json.loads(js)
 
