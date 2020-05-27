@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 from torchvision import datasets, transforms
-import pytorch_ssim
+#import pytorch_ssim
 import numpy as np
 import argparse
 import json
@@ -51,8 +51,8 @@ def main():
     args.workers = 4
     args.seed = time.time()
     args.print_freq = 30
-    args.train_json = '/content/train.json'
-    args.test_json= '/content/test.json'
+    args.train_json = 'train.json'
+    args.test_json= 'test.json'
     args.gpu = '0'
     args.task = 'Visdrone2019'
     # args.pre = 'shanghaiAcheckpoint.pth.tar'
@@ -60,7 +60,7 @@ def main():
         train_list = json.load(outfile)
     with open(args.test_json, 'r') as outfile:       
         val_list = json.load(outfile)
-    
+
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     torch.cuda.manual_seed(args.seed)
     
@@ -115,21 +115,21 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
     losses = AverageMeter()
     batch_time = AverageMeter()
     data_time = AverageMeter()
-    
-    
+
     train_loader = torch.utils.data.DataLoader(
         dataset.listDataset(train_list,
                        shuffle=True,
                        transform=transforms.Compose([
                        transforms.ToTensor(),
-                           # transforms.RandomCrop(300),
-                           transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])]),
+                       transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225]),
+                   ]), 
                        train=True, 
                        seen=model.seen,
                        batch_size=args.batch_size,
                        num_workers=args.workers),
         batch_size=args.batch_size)
+
     print('epoch %d, processed %d samples, lr %.10f' % (epoch, epoch * len(train_loader.dataset), args.lr))
     
     model.train()
