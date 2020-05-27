@@ -7,7 +7,12 @@ from PIL import Image
 from image import *
 # import torchvision.transforms.functional as F
 import json
-
+#stackoverflow
+def string_escape(s, encoding='utf-8'):
+      return (s.encode('latin1')         # To bytes, required by 'unicode-escape'
+             .decode('unicode-escape') # Perform the actual octal-escaping decode
+             .encode('latin1')         # 1:1 mapping back to bytes
+             .decode(encoding))        # Decode original encoding
 class listDataset(Dataset):
     def __init__(self, root, shape=None, shuffle=True, transform=None,  train=False, seen=0, batch_size=1, num_workers=4):
         if train:
@@ -27,6 +32,7 @@ class listDataset(Dataset):
         
     def __len__(self):
         return self.nSamples
+
     def __getitem__(self, index):
         assert index <= len(self), 'index range error'
 
@@ -40,8 +46,8 @@ class listDataset(Dataset):
         GT = np.sum(groundtruth)
         str1 = img_path.split('/sequences/')
         img_name = str1[1]
-        img_name = img_name.encode('unicode-escape').decode('string_escape')
-
+        #img_name = img_name.encode('unicode_escape').decode('string_escape')
+        img_name = string_escape(img_name)
         file = open('./detection_result/train.txt', 'r')
         js = file.read()
         dict = json.loads(js)
