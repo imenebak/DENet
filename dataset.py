@@ -48,7 +48,7 @@ class listDataset(Dataset):
         img_name = str1[1]
         #img_name = img_name.encode('unicode_escape').decode('string_escape')
         img_name = string_escape(img_name)
-        file = open('./detection_result/train.txt', 'r')
+        file = open('train/train.txt', 'r')
         js = file.read()
         dict = json.loads(js)
 
