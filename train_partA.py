@@ -45,16 +45,16 @@ def main():
     args.momentum      = 0.95
     args.decay         = 5*1e-4
     args.start_epoch   = 0
-    args.epochs = 800
+    args.epochs = 200 #800
     args.steps         = [-1,1,100,150]
     args.scales        = [1,1,1,1]
     args.workers = 4
     args.seed = time.time()
     args.print_freq = 30
-    args.train_json = './json/mypart_A_train.json'
-    args.test_json= './json/mypart_A_test.json'
+    args.train_json = '/content/train.json'
+    args.test_json= '/content/test.json'
     args.gpu = '0'
-    args.task = 'shanghaiA'
+    args.task = 'Visdrone2019'
     # args.pre = 'shanghaiAcheckpoint.pth.tar'
     with open(args.train_json, 'r') as outfile:        
         train_list = json.load(outfile)
@@ -142,10 +142,14 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
         img = Variable(img)
         output = model(img)
 
+
         target = target.type(torch.FloatTensor).unsqueeze(0).cuda()
         target = Variable(target)
+
+
         GT_detection =GT_detection.type(torch.FloatTensor).unsqueeze(0).cuda()
         GT_detection = Variable(GT_detection)
+
         target_sum = target_sum.type(torch.FloatTensor).unsqueeze(0).cuda()
         target_sum = Variable(target_sum)
 
@@ -167,9 +171,11 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                  'Loss1 {loss.val:.4f} ({loss.avg:.4f})\t'
+                  'Loss2 {loss.val:.4f} ({loss.avg:.4f})\t'
                   .format(
                    epoch, i, len(train_loader), batch_time=batch_time,
-                   data_time=data_time, loss=losses))
+                   data_time=data_time, loss=losses, loss1=loss, loss2 = loss2))
     
 def validate(val_list, model, criterion):
     print ('begin test')
