@@ -5,8 +5,8 @@ import numpy as np
 import os
 import glob
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 from matplotlib import pyplot as plt
 from image import *
 from model import CSRNet, SANet, MCNN
@@ -27,21 +27,13 @@ transform=transforms.Compose([
                        transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225]),
                    ])
-root = './Shanghai/'
-#now generate the ShanghaiA's ground truth
-# part_A_train = os.path.join(root,'part_A_final/train_data','images')
-# part_A_test = os.path.join(root,'part_A_final/test_data','images')
-# part_B_train = os.path.join(root,'part_B_final/train_data','images')
-# part_B_test = os.path.join(root,'part_B_final/test_data','images')
+root = '/content'
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-part_A_train = os.path.join(root,'part_A_final/train_data','images')
-part_A_test = os.path.join(root,'newpartA/test_data','images')
-part_B_train = os.path.join(root,'part_B_final/train_data','images')
-part_B_test = os.path.join(root,'newpartB/test_data','images')
-part_1_test = os.path.join(root,'test/200608','images')
-UCF1=os.path.join(root,'newpartB/test_data','images')
-UCSD_test='./UCSD/test/images1'
-path_sets = [part_B_test]
+train = os.path.join(root,'DENet/train','sequences')
+test = os.path.join(root,'DENet/test','sequences')
+
+path_sets = [test]
 
 img_paths = []
 for path in path_sets:
@@ -51,7 +43,7 @@ for path in path_sets:
 model = CSRNet()
 
 model = model.cuda()
-checkpoint = torch.load('./pre-trianed model/shanghaiBmodel_best.pth.tar')
+checkpoint = torch.load('/content/DENet/Visdrone2019model_best.pth.tar')
 model.load_state_dict(checkpoint['state_dict'])
 mae = 0
 mse = 0
@@ -103,17 +95,17 @@ mse = 0
 
 # prec1 = validate(val_list, model)
 #
-file=open('./detection_result/testB.txt','r')
+file=open('train/train.txt','r')
 js=file.read()
 dict=json.loads(js)
 GTresult=[]
 Eresult=[]
-for i in xrange(len(img_paths)):
+for i in range(len(img_paths)):
 
     img = transform(Image.open(img_paths[i]).convert('RGB')).cuda()
 
     # gt_file = h5py.File(img_paths[i].replace('.jpg','.h5').replace('images','ground_truth').replace('newpartA/test_data','part_A_final/test_data'),'r')
-    gt_file = h5py.File(img_paths[i].replace('.jpg', '.h5').replace('images', 'ground_truth').replace('newpartB/test_data','part_B_final/test_data'),'r')
+    gt_file = h5py.File(img_paths[i].replace('.jpg', '.h5').replace('sequences', 'ground_truth').replace('newpartB/test_data','part_B_final/test_data'),'r')
 
     # gt_file = h5py.File(img_paths[i].replace('.jpg', '.h5').replace('images', 'ground_truth'),'r')
 
@@ -121,7 +113,7 @@ for i in xrange(len(img_paths)):
     output = model(img.unsqueeze(0))
     # # tensor to numpy
 
-    str1=img_paths[i].split('/images/')
+    str1=img_paths[i].split('/sequences/')
 
     img_name=str1[1]
     strname = './result/' + img_name
@@ -150,8 +142,8 @@ for i in xrange(len(img_paths)):
     # output=[]
     # print i,mae,mse
     if abs(GT-estimated)<25:
-        print i,GT,estimated
-print mae/len(img_paths), np.sqrt(mse/len(img_paths))
+        print (i,GT,estimated)
+print (mae/len(img_paths), np.sqrt(mse/len(img_paths)))
 
 t = np.arange(len(img_paths))
 plt.figure()
