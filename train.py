@@ -207,7 +207,7 @@ def validate(val_list, model, criterion):
         mse += (output.data.sum() - GT_detection.data.sum()) * (output.data.sum() - GT_detection.data.sum())
         # mse += np.square(output.data.sum() - target.sum().type(torch.FloatTensor).cuda())
     mae = mae / len(test_loader)
-    mse = np.sqrt(mse / len(test_loader))
+    mse = torch.sqrt(mse / len(test_loader))
     print(' * MAE {mae:.3f} '
           .format(mae=mae))
     print(' * MSE {mse:.3f} '
