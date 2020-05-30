@@ -153,10 +153,10 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
         target_sum = target_sum.type(torch.FloatTensor).unsqueeze(0).cuda()
         target_sum = Variable(target_sum)
 
-        loss = criterion(output, target)
+        loss1 = criterion(output, target)
         loss2 = criterion1(GT_detection,target_sum)
 
-        loss=loss+loss2
+        loss=loss1+loss2
         
         losses.update(loss.item(), img.size(0))
         optimizer.zero_grad()
@@ -171,8 +171,8 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Loss1 {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Loss2 {loss.val:.4f} ({loss.avg:.4f})\t'
+                  'Loss1 {loss1.val:.4f} ({loss1.avg:.4f})\t'
+                  'Loss2 {loss2.val:.4f} ({loss2.avg:.4f})\t'
                   .format(
                    epoch, i, len(train_loader), batch_time=batch_time,
                    data_time=data_time, loss=losses, loss1=loss, loss2 = loss2))
