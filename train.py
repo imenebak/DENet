@@ -113,6 +113,8 @@ def main():
 def train(train_list, model, criterion, criterion1, optimizer, epoch):
     
     losses = AverageMeter()
+    losses1 = AverageMeter()
+    losses2 = AverageMeter()
     batch_time = AverageMeter()
     data_time = AverageMeter()
 
@@ -154,15 +156,18 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
         target_sum = Variable(target_sum)
 
         loss1 = criterion(output, target)
+        
         loss2 = criterion1(GT_detection,target_sum)
-
+        #print(loss1, loss2)
         loss=loss1+loss2
         
         losses.update(loss.item(), img.size(0))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()    
-        
+
+        losses1.update(loss1.item(), img.size(0))
+        losses2.update(loss2.item(), img.size(0))
         batch_time.update(time.time() - end)
         end = time.time()
         
@@ -175,7 +180,7 @@ def train(train_list, model, criterion, criterion1, optimizer, epoch):
                   'Loss2 {loss2.val:.4f} ({loss2.avg:.4f})\t'
                   .format(
                    epoch, i, len(train_loader), batch_time=batch_time,
-                   data_time=data_time, loss=losses, loss1=loss, loss2 = loss2))
+                   data_time=data_time, loss=losses, loss1=losses1, loss2=losses2))
     
 def validate(val_list, model, criterion):
     print ('begin test')
